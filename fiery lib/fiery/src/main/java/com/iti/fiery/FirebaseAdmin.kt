@@ -1,10 +1,7 @@
-package com.example.fire_users
+package com.iti.fiery
 
 import android.content.Context
 import com.google.firebase.auth.FirebaseAuth
-import com.iti.fiery.EMAIL
-import com.iti.fiery.PASSWORD
-import com.iti.fiery.SharedPrefsRepo
 
 class FirebaseAdmin(
     private val context: Context,
