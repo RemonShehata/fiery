@@ -4,18 +4,23 @@ import android.content.Context
 import com.google.firebase.auth.FirebaseAuth
 
 class FirebaseAdmin(
-    private val context: Context,
+    context: Context,
     private val email: String,
-    private val password: String
+    private val password: String,
+    private val adminCallbacks: AdminCallbacks
 ) {
     private val auth = FirebaseAuth.getInstance()
     private val sp = SharedPrefsRepo(context)
 
     fun singAdminIn() {
         auth.signInWithEmailAndPassword(email, password)
-            .addOnCompleteListener() { task ->
+            .addOnCompleteListener { task ->
                 if (task.isSuccessful) {
-
+                    adminCallbacks.onLoggedin()
+                } else {
+                    task.exception?.let {
+                        adminCallbacks.onError(it)
+                    }
                 }
             }
     }
@@ -23,6 +28,7 @@ class FirebaseAdmin(
     fun signAdminOut() {
         sp.deleteSharedPreferences()
         auth.signOut()
+        adminCallbacks.onLoggedout()
     }
 
     private fun saveDataInSecureSP() {
