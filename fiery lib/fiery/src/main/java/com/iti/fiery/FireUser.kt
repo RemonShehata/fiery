@@ -3,7 +3,10 @@ package com.iti.fiery
 import android.content.Context
 import com.google.firebase.auth.FirebaseAuth
 
-class FireUser(context: Context) {
+class FireUser(
+    context: Context,
+    private val userCallbacks: UserCallbacks
+) {
     private val auth = FirebaseAuth.getInstance()
     private val sp = SharedPrefsRepo(context)
 
@@ -13,7 +16,9 @@ class FireUser(context: Context) {
                 if (task.isSuccessful) {
                     signAdminBackIn()
                 } else {
-
+                    task.exception?.let {
+                        userCallbacks.onError(it)
+                    }
                 }
             }
     }
@@ -29,9 +34,9 @@ class FireUser(context: Context) {
         auth.signInWithEmailAndPassword(secretEmail, secretPassword)
             .addOnCompleteListener { task ->
                 if (task.isSuccessful) {
-
+                    userCallbacks.onNewUserCreated()
                 } else {
-
+                    task.exception?.let { userCallbacks.onError(it) }
                 }
             }
     }
