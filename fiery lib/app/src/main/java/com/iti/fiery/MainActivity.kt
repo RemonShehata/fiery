@@ -4,6 +4,7 @@ import android.os.Bundle
 import android.util.Log
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
+import com.google.firebase.auth.FirebaseAuth
 import kotlinx.android.synthetic.main.activity_main.*
 
 class MainActivity : AppCompatActivity() {
@@ -18,11 +19,29 @@ class MainActivity : AppCompatActivity() {
     private fun setclickListeners() {
         logAdminIn.setOnClickListener { logAdminInClicked() }
         createNewUser.setOnClickListener { createNewUserClicked() }
+        getCurrentUser.setOnClickListener { getCurrentUserClicked() }
+    }
+
+    private fun getCurrentUserClicked() {
+        val email = FirebaseAuth.getInstance().currentUser?.email
+        Toast.makeText(this, email, Toast.LENGTH_SHORT).show()
+
     }
 
     private fun createNewUserClicked() {
-        val email = userEmail.text.toString()
-        val password = userPassword.text.toString()
+        val email = userEmail.text.toString().trim()
+        val password = userPassword.text.toString().trim()
+
+        FireUser(this, object : UserCallbacks{
+            override fun onNewUserCreated() {
+                Toast.makeText(this@MainActivity, "New user Created", Toast.LENGTH_SHORT).show()
+            }
+
+            override fun onError(exception: java.lang.Exception) {
+                Log.e(TAG, exception.toString())
+            }
+
+        }).createNewUser(email, password)
     }
 
     private fun logAdminInClicked() {

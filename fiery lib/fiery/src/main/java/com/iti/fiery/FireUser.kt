@@ -11,7 +11,7 @@ class FireUser(
     private val sp = SharedPrefsRepo(context)
 
     fun createNewUser(email: String, password: String) {
-        auth.signInWithEmailAndPassword(email, password)
+        auth.createUserWithEmailAndPassword(email, password)
             .addOnCompleteListener { task ->
                 if (task.isSuccessful) {
                     signAdminBackIn()
