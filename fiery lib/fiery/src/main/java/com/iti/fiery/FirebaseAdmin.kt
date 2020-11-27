@@ -16,6 +16,7 @@ class FirebaseAdmin(
         auth.signInWithEmailAndPassword(email, password)
             .addOnCompleteListener { task ->
                 if (task.isSuccessful) {
+                    saveDataInSecureSP()
                     adminCallbacks.onLoggedin()
                 } else {
                     task.exception?.let {
